@@ -7,7 +7,6 @@ const express = require('express'),
       iphone = devices['iPhone 6'],
       FuzzySet = require('fuzzyset.js');
 
-      
       var marketplaces = [
           { 
             name: 'amazon',
