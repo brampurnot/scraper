@@ -1,0 +1,15 @@
+{
+  "name": "scraper_docker",
+  "version": "1.0.0",
+  "description": "Node.js on Docker",
+  "author": "Bram Purnot <bram.purnot@sap.com>",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.16.1",
+    "puppeteer": "^3.0.2",
+    "fuzzyset.js": "0.0.91"
+  }
+}

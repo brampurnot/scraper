@@ -1,0 +1,5 @@
+applications:
+- name: scraper
+  host: scraper
+  memory: 512M
+  health-check-type: process
