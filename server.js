@@ -75,6 +75,17 @@ const express = require('express'),
             productImage: 'img.productPhoto',
             productPrice: 'price-range',
             productCurrency: 'USD'        
+        },
+        {
+            name: 'google',
+            defaultCurrency: 'EUR',
+            domain: 'https://www.google.com/search?newwindow=1&hl=nl&tbm=shop&q=',
+            resultItem: '.sh-pr__product-result',
+            productName: '.sh-ti__ltitle-link',
+            productURL: 'a',
+            productImage: 'img',
+            productPrice: '._-Bz._-By',
+            productCurrency: 'USD'       
         }
      ]
 
@@ -132,6 +143,9 @@ app.get('/scrapeProducts/:marketplace', async (req, res) => {
                 try {
                     //First one is price > if not price is found, an exception is thrown and nothing is added to the array
                     var prodPrice = await result.$eval(SELECTORS.productPrice, el => el.textContent);
+                    //Replace comma by dot
+                    prodPrice = prodPrice.replace(",", ".")
+                    console.log("Prod Price: " + prodPrice)
 
                     //Specific to Grainger > check if it is not a range
                     if(prodPrice.includes('-'))   {
