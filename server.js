@@ -35,7 +35,8 @@ const express = require('express'),
         {
             name: 'grainger',
             defaultCurrency: 'USD',
-            domain: 'https://www.grainger.com/search?searchBar=true&ts_optout=true&searchQuery=',
+            //domain: 'https://www.grainger.com/search?searchBar=true&ts_optout=true&searchQuery=',
+            domain: 'https://www.grainger.com/mobile/search?optOut=0&NLSCM=17&searchQuery=',
             resultItem: '.result.clear.reactive',
             productName: '.productName .ui-link',
             productURL: '.pidp-link',
@@ -137,19 +138,19 @@ app.get('/scrapeProducts/:marketplace', async (req, res) => {
 
             /*  Some special stuff here for Grainger    */
             //For Grainger > check if the link "nls-opt-out ui-link" exists and if so click it
-            try {
-                await page.$eval('.nls-opt-out.ui-link', e => {
-                    console.log(e);
-                    e.click();
+            /*try {
+                console.log("Checking this element")
+                await page.$eval('.nls-opt-out', e => {
+                    console.log("Found the element so have to click it ");
+                    return e.click();
                 });
+                console.log("Done searching it")
             }catch(e)   {
                 console.log("No grainger element found so continuing...")
-            }
-
+            }*/
 
             const els = await page.$$(SELECTORS.resultItem);
-            console.log("Got some results: " + els.length)
-
+            console.log("Got some results: " + els.length);
 
             let products = [];
             for (const result of els) {
