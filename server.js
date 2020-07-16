@@ -36,7 +36,7 @@ const express = require('express'),
             name: 'grainger',
             defaultCurrency: 'USD',
             domain: 'https://www.grainger.com/search?searchBar=true&ts_optout=true&searchQuery=',
-            resultItem: '.result.clear.reactive ',
+            resultItem: '.result.clear.reactive',
             productName: '.productName .ui-link',
             productURL: '.pidp-link',
             productImage: '.aggregatedResultImage',
@@ -135,10 +135,23 @@ app.get('/scrapeProducts/:marketplace', async (req, res) => {
             //await page.emulate(iphone)
             await page.goto(`${SELECTORS.domain}${product}!`, {timeout: 90000})
 
-            let products = [];
+            /*  Some special stuff here for Grainger    */
+            //For Grainger > check if the link "nls-opt-out ui-link" exists and if so click it
+            try {
+                await page.$eval('.nls-opt-out.ui-link', e => {
+                    console.log(e);
+                    e.click();
+                });
+            }catch(e)   {
+                console.log("No grainger element found so continuing...")
+            }
+
+
             const els = await page.$$(SELECTORS.resultItem);
             console.log("Got some results: " + els.length)
 
+
+            let products = [];
             for (const result of els) {
                 try {
                     //First one is price > if not price is found, an exception is thrown and nothing is added to the array
