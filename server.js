@@ -14,7 +14,7 @@ const express = require('express'),
             domain: 'https://www.amazon.com/s/?field-keywords=',
             resultItem: '.s-result-item',
             productName: 'span.a-size-small.a-color-base.a-text-normal',
-            productURL: 'a.a-link-normal.s-faceout-link.a-text-normal',
+            productURL: 'a.a-link-normalaliba.s-faceout-link.a-text-normal',
             productImage: 'img',
             productCurrency: 'span.a-price-symbol',
             productPrice: 'span.a-price-whole',
@@ -35,13 +35,13 @@ const express = require('express'),
         {
             name: 'grainger',
             defaultCurrency: 'USD',
-            //domain: 'https://www.grainger.com/search?searchBar=true&ts_optout=true&searchQuery=',
-            domain: 'https://www.grainger.com/mobile/search?optOut=0&NLSCM=17&searchQuery=',
-            resultItem: '.result.clear.reactive',
-            productName: '.productName .ui-link',
-            productURL: '.pidp-link',
-            productImage: '.aggregatedResultImage',
-            productPrice: '.price',
+            domain: 'https://www.grainger.com/search?searchBar=true&ts_optout=true&searchQuery=',
+            //domain: 'https://www.grainger.com/mobile/search?optOut=0&NLSCM=17&searchQuery=',
+            resultItem: '.product',
+            productName: '.product__details-link',
+            productURL: 'a.product__details-link',
+            productImage: 'img.image',
+            productPrice: '.pricing__price',
             productCurrency: ''
         },
         {
@@ -87,6 +87,17 @@ const express = require('express'),
             productImage: 'img',
             productPrice: '._-Bz._-By',
             productCurrency: 'USD'       
+        },
+        {
+            name: 'gem',
+            defaultCurrency: 'INR',
+            domain: 'https://mkp.gem.gov.in/search?q=',
+            resultItem: '.variant-wrapper.btn-add_to_cart.rle-add_to_cart bre-.product-init',
+            productName: '.variant-title > a',
+            productURL: '.variant-title > a',
+            productImage: 'img',
+            productPrice: '.m-w',
+            productCurrency: 'INRUSD'       
         }
      ]
 
@@ -108,7 +119,7 @@ app.get('/scrapeProducts/:marketplace', async (req, res) => {
             let SELECTORS = marketplaces.find(el => el.name.toUpperCase() === marketPlace.toUpperCase())
             browser = await puppeteer.launch(
                 {
-                    headless: true,
+                    headless: true, //Change it back
                     defaultViewport: {
                         width: 360, //1240
                         height: 640 //820
@@ -131,7 +142,7 @@ app.get('/scrapeProducts/:marketplace', async (req, res) => {
             });
 
             // Configure the navigation timeout
-            await page.setDefaultNavigationTimeout(0);
+            //await page.setDefaultNavigationTimeout(0);
             await page.emulate(devices['devicesMap']['iPhone 6'])
             //await page.emulate(iphone)
             await page.goto(`${SELECTORS.domain}${product}!`, {timeout: 90000})
@@ -148,7 +159,7 @@ app.get('/scrapeProducts/:marketplace', async (req, res) => {
             }catch(e)   {
                 console.log("No grainger element found so continuing...")
             }*/
-
+            console.log("Searching for: " + SELECTORS.resultItem);
             const els = await page.$$(SELECTORS.resultItem);
             console.log("Got some results: " + els.length);
 
@@ -252,7 +263,8 @@ app.get('/scrapeProducts/:marketplace', async (req, res) => {
                 }
             }
                     
-            let result = fSet.get(product, products, 0)
+            let result = fSet.get(product, products, 0);
+            console.log('Result: ' + JSON.stringify(result));
 
             //Take the first 5 products
             let index = 0;

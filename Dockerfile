@@ -22,7 +22,8 @@ COPY package*.json ./
 # Moved to stable version of Google Chrome after the unstable version started
 # leading to 'Page crashed!' errors.
 # Used the version suggested at https://github.com/alpeware/chrome-headless-stable/blob/master/Dockerfile
-ENV CHROME_VERSION=81.0.4044.138
+#ENV CHROME_VERSION=81.0.4044.138
+ENV CHROME_VERSION=86.0.4240.75
 
 RUN apt-get update && apt-get install -y wget --no-install-recommends \
   && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
@@ -31,10 +32,15 @@ RUN apt-get update && apt-get install -y wget --no-install-recommends \
   && apt-get install -y google-chrome-unstable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst ttf-freefont \
   && apt-get install -y google-chrome-stable=${CHROME_VERSION}-1 --no-install-recommends \
   && apt-get install -y build-essential \
+  && apt-get install -y libxss1 \
   && rm /etc/apt/sources.list.d/google-chrome.list \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get purge --auto-remove -y curl \
   && rm -rf /src/*.deb
+
+
+  #sudo apt-get install gconf-service libasound2 libatk1.0-0 libatk-bridge2.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget
+
 
 # If running Docker >= 1.13.0 use docker run's --init arg to reap zombie processes, otherwise
 # uncomment the following lines to have `dumb-init` as PID 1
@@ -71,3 +77,4 @@ COPY . .
 
 EXPOSE 8080
 CMD [ "node", "server.js" ]
+
